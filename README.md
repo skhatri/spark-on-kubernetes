@@ -1,20 +1,29 @@
 ### Building Spark Runner
+Set working registry
+```
+REGISTRY=""
+CONTAINER_REGISTRY=""
+REGISTRY="localhost:5000/"
+CONTAINER_REGISTRY="192.168.64.1:5000/"
+```
+
 Build and Push Spark Runner
 ```
 export SPARK_HOME=~/dev/tools/spark-3.0.1-bin-hadoop3.2
 export SPARK_VERSION="v3.0.1"
 $SPARK_HOME/bin/docker-image-tool.sh -r docker.io/$(whoami) -t ${SPARK_VERSION} -p $SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile build
-docker push $(whoami)/spark:${SPARK_VERSION}
+docker tag ${REGISTRY}$(whoami)/spark:${SPARK_VERSION}
+docker push ${REGISTRY}$(whoami)/spark:${SPARK_VERSION}
 ```
 
 
 ### Build Spark App
 Build Spark Job and push to registry
 ```
-export APP_VERSION="1.0.8"
-./gradlew clean build
-docker build --build-arg username=$(whoami) -t $(whoami)/spark-k8s-hello:${APP_VERSION} .
-docker push $(whoami)/spark-k8s-hello:${APP_VERSION}
+export APP_VERSION="1.0.9"
+./gradlew clean build shadowJar
+docker build --build-arg username=$(whoami) -t ${REGISTRY}$(whoami)/spark-k8s-hello:${APP_VERSION} .
+docker push ${REGISTRY}$(whoami)/spark-k8s-hello:${APP_VERSION}
 ```
 
 ### Running Locally Against Kubernetes Proxy
@@ -31,8 +40,8 @@ $SPARK_HOME/bin/spark-submit \
     --name hello \
     --class demo.Count \
     --conf spark.executor.instances=2 \
-    --conf spark.kubernetes.container.image=$(whoami)/spark-k8s-hello:${APP_VERSION} \
-    local:///tmp/jars/spark-k8s-hello.jar
+    --conf spark.kubernetes.container.image=${CONTAINER_REGISTRY}$(whoami)/spark-k8s-hello:${APP_VERSION} \
+    local:///tmp/jars/spark-k8s-hello-all.jar
 ```
 
 ### Running Locally
@@ -43,7 +52,7 @@ $SPARK_HOME/bin/spark-submit \
     --name hello \
     --class demo.Count \
     --conf spark.executor.instances=1 \
-    local://./build/libs/spark-k8s-hello.jar
+    local://./build/libs/spark-k8s-hello-all.jar
 ```
 
 ### Running Against Kubernetes

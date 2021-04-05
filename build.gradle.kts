@@ -22,6 +22,9 @@ dependencies {
         implementation("org.apache.spark:${name}_${scalaVersion}:$sparkVersion")
     }
     uber("com.datastax.oss:java-driver-core:4.10.0")
+    uber("com.fasterxml.jackson.module:jackson-module-scala_2.12:2.11.2") {
+      exclude(module="scala-library")
+    }
 
     implementation(uber)
 }

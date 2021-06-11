@@ -9,8 +9,9 @@ CONTAINER_REGISTRY="192.168.64.1:5000/"
 
 Build and Push Spark Runner
 ```
-export SPARK_HOME=~/dev/tools/spark-3.0.1-bin-hadoop3.2
-export SPARK_VERSION="v3.0.1"
+export SPARK_HOME=~/dev/tools/spark-3.1.1-bin-hadoop3.2
+export SPARK_VERSION="v3.1.1"
+#modified Dockerfile is provided as Dockerfile_spark
 $SPARK_HOME/bin/docker-image-tool.sh -r docker.io/$(whoami) -t ${SPARK_VERSION} -p $SPARK_HOME/kubernetes/dockerfiles/spark/Dockerfile build
 docker tag ${REGISTRY}$(whoami)/spark:${SPARK_VERSION}
 docker push ${REGISTRY}$(whoami)/spark:${SPARK_VERSION}

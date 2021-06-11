@@ -42,7 +42,7 @@ $SPARK_HOME/bin/spark-submit \
     --class demo.Count \
     --conf spark.executor.instances=2 \
     --conf spark.kubernetes.container.image=${CONTAINER_REGISTRY}$(whoami)/spark-k8s-hello:${APP_VERSION} \
-    local:///tmp/jars/spark-k8s-hello-all.jar
+    local:///opt/app/jars/spark-k8s-hello-all.jar
 ```
 
 ### Running Locally
